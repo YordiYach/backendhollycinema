@@ -1,24 +1,27 @@
-const User = require('../model/usuario');
+const Usuario = require("../model/usuario");
 
-const editcredits = async (req, res) => {
-    const { userId } = req.params;
-    const { credits } = req.body;
-
+const agregarCreditos = async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { $inc: { creditos: credits } },
-            { new: true }
-        );
+        // const { id } = req.user; // Obtenemos el id del usuario del token
+        const { creditos, id } = req.body; // Obtenemos la cantidad de créditos a agregar desde el cuerpo de la petición
 
-        if (!user) {
-            return res.status(404).json({ error: "Usuario no encontrado" });
+        const usuario = await Usuario.findById(id); // Buscamos al usuario por su id
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
-        return res.status(200).json(user);
+
+        usuario.creditos += creditos; // Agregamos los créditos a la cuenta del usuario
+
+        await usuario.save(); // Guardamos los cambios en la base de datos
+
+        res.json({
+            mensaje: `Se han agregado ${creditos} créditos a la cuenta de ${usuario.nombre}`,
+        });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Error al actualizar los créditos del usuario" });
+        res.status(500).json({ mensaje: "Ha ocurrido un error al agregar los créditos" });
     }
 };
 
-module.exports = editcredits;
+module.exports = agregarCreditos;

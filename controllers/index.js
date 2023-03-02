@@ -5,7 +5,7 @@ const addmovie = require('./addmovie')
 const getmovies = require('./getmovies')
 const deletemovies = require('./deletemovies')
 const getusers = require('./getusers')
-const editcredits = require('./editcredits')
+const agregarCreditos = require('./editcredits')
 const getfacturas = require('./getfacturas')
 module.exports = {
   register,
@@ -15,6 +15,6 @@ module.exports = {
   getmovies,
   deletemovies,
   getusers,
-  editcredits,
+  agregarCreditos,
   getfacturas
 };

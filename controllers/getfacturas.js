@@ -1,14 +1,26 @@
+const Usuario = require("../model/usuario");
 const Factura = require("../model/factura");
 
-const getfacturas = async (req, res) => {
+const obtenerFacturasUsuario = async (req, res) => {
     try {
-        const facturas = await Factura.find({}, { _id: 1, pelicula: 1, sala: 1, asientos: 1, horario: 1, total: 1 }).lean();
-        // consulta todos los usuarios y devuelve solo los campos requeridos
-        res.json(facturas); // envía la lista de usuarios como respuesta en formato JSON
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener la lista de Facturas' });
-    }
-}
+        // Buscamos al usuario autenticado por su ID
+        const usuario = await Usuario.findById(req.user.id);
 
-module.exports = getfacturas;
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        // Utilizamos el método populate para obtener todas las facturas asociadas con el usuario
+        const facturas = await Factura.find({ usuario: usuario._id }).populate(
+            "usuario",
+            "nombre apellido correo telefono"
+        );
+
+        res.json(facturas);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ mensaje: "Error al obtener facturas" });
+    }
+};
+
+module.exports = obtenerFacturasUsuario;

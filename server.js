@@ -10,22 +10,26 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-
+//user
 app.get('/user/', verifyToken, controllers.getUserById)
+//user
 app.post('/register', controllers.register)
+//user
 app.post('/login', controllers.login)
+//admin
 app.post('/addmovie', controllers.addmovie)
-
+//user
 app.get('/getmovies', controllers.getmovies)
-app.get('/getfacturas', controllers.getfacturas)
-
+//user
+app.get('/getfacturas', verifyToken ,controllers.getfacturas)
+//admin
 app.delete('/deletemovies/:id', controllers.deletemovies)
-
+//admin
 app.get('/users', controllers.getusers)
-
-app.post('/increcreditos/', controllers.editcredits)
-
-app.post("/factura", controllersFactura.crearFactura);
+//admin
+app.post('/addcredits', controllers.agregarCreditos)
+//user
+app.post("/factura", verifyToken,controllersFactura.crearFactura);
 
 const PORT = 4000;
 
